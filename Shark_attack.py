@@ -225,3 +225,38 @@ plt.tight_layout()
 plt.show()
 
 #--------------------------------------------------------------------------------------------------------------------------
+
+"⭐ Objective5: Fatality Distribution and Impact"
+# Analyzing the severity and demographic impact of fatal vs non-fatal incidents.
+
+df.columns = df.columns.str.strip()  
+df.rename(columns={'Fatal (Y/N)': 'Fatal'}, inplace=True)
+df['Fatal'] = df['Fatal'].str.upper().str.strip()
+
+df['Fatal'] = df['Fatal'].replace({'UNKNOWN': 'N', '2017': 'N'})  # Replacing with 'N' (Non-Fatal)
+
+df = df[df['Fatal'].isin(['Y', 'N'])]
+
+# --- 1. Donut Chart: Fatal vs Non-Fatal ---
+fatal_counts = df['Fatal'].value_counts()
+
+# Plot the donut chart
+plt.figure(figsize=(6, 6))
+colors=['#8B4513', '#D2B48C']
+plt.pie(fatal_counts, labels=fatal_counts.index, autopct='%1.1f%%', startangle=90,
+        colors=colors, wedgeprops=dict(width=0.4, edgecolor='none'))
+plt.title('Fatal vs Non-Fatal Attacks')
+plt.show()
+
+# --- 2. Violin Plot: Age and Fatality Distribution by Gender ---
+df_violin = df[['Age', 'Sex', 'Fatal']].dropna()
+df_violin['Age'] = pd.to_numeric(df_violin['Age'], errors='coerce')
+df_violin = df_violin.dropna()
+
+# Plot violin plot for Age and Fatality by Gender
+plt.figure(figsize=(8, 6))
+sns.violinplot(x='Sex', y='Age', hue='Fatal', data=df_violin, split=True,
+               palette={'Y': '#ff6666', 'N': '#66b3ff'})
+plt.title('Age and Fatality Distribution by Gender')
+plt.show()
+#------------------------------------------------------------------------------------------------------------------------
