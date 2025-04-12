@@ -293,3 +293,27 @@ plt.tight_layout()
 plt.grid(False)
 plt.show()
 #---------------------------------------------------------------------------------------------------------------------------
+
+"⭐ Objective7: Outlier Detection in Numerical Data"
+# Identifying anomalies in columns like Age and Year to improve data accuracy and analytical insights.
+
+numeric_cols = df.select_dtypes(include='number').drop(['Year', 'Decade'], axis=1)
+
+# Plot boxplots for each numeric column
+plt.figure(figsize=(12, 6))
+sns.boxplot(data=numeric_cols, palette='husl')
+plt.title('Boxplots of Numerical Columns (excluding Year and Decade)')
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+
+year_decade_df = df[['Year', 'Decade']]
+
+# Plot combined boxplot for 'Year' and 'Decade'
+plt.figure(figsize=(8, 6))
+sns.boxplot(data=year_decade_df, palette='muted')
+plt.title('Boxplot of Year and Decade')
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+
