@@ -167,3 +167,61 @@ plt.legend(title='Country', loc='lower right', fontsize=12)
 plt.grid(False)
 plt.show()
 # -----------------------------------------------------------------------------------------------------------------------------
+
+"⭐ Objective4: Yearly and Global Trend Analysis"
+# Analyzing how shark attack incidents have evolved over time and identifying countries most affected globally.
+
+plt.style.use('dark_background')
+# sns.set_style("darkgrid")
+
+df_copy = df.copy()  
+
+df_filtered = df_copy[['Year', 'Country']]
+
+df_filtered = df_filtered[df_filtered['Year'].apply(lambda x: str(x).isdigit())]
+df_filtered['Year'] = df_filtered['Year'].astype(int)
+
+df_filtered = df_filtered[df_filtered['Year'] > 1900]
+
+df_filtered = df_filtered.dropna(subset=['Country'])
+
+attacks_per_year = df_filtered['Year'].value_counts().sort_index()
+cumulative_attacks = attacks_per_year.cumsum()
+
+top_countries = df_filtered['Country'].value_counts().head(10)
+
+plt.style.use('dark_background')
+fig, axs = plt.subplots(3, 1, figsize=(12, 15))
+plt.subplots_adjust(hspace=0.4)
+fig.subplots_adjust(bottom=0.1)
+
+# Yearly trend plot
+axs[0].plot(attacks_per_year.index, attacks_per_year.values, marker='x', color='hotpink')
+axs[0].set_title('Yearly Trend of Shark Attacks')
+axs[0].set_xlabel('Year', labelpad=10)
+axs[0].set_ylabel('Number of Attacks')
+axs[0].grid(False)
+axs[0].xaxis.set_major_locator(MaxNLocator(integer=True, nbins=10))
+axs[0].tick_params(axis='x', rotation=45)
+
+# Cumulative attacks plot
+axs[1].fill_between(cumulative_attacks.index, cumulative_attacks.values, color='#7A3B7B', alpha=0.5)
+axs[1].plot(cumulative_attacks.index, cumulative_attacks.values, color='#9E5D85')
+axs[1].set_title('Cumulative Shark Attacks Over Time')
+axs[1].set_xlabel('Year', labelpad=10)
+axs[1].set_ylabel('Cumulative Attacks')
+axs[1].grid(False)
+axs[1].xaxis.set_major_locator(MaxNLocator(integer=True, nbins=10))
+axs[1].tick_params(axis='x', rotation=45)
+
+# Top countries plot
+axs[2].barh(top_countries.index[::-1], top_countries.values[::-1], color='#D27E9C', edgecolor="#D27E9C")
+axs[2].set_title('Top 10 Countries with Shark Attacks')
+axs[2].set_xlabel('Number of Attacks')
+axs[2].set_ylabel('Country')
+axs[2].grid(False)
+
+plt.tight_layout()
+plt.show()
+
+#--------------------------------------------------------------------------------------------------------------------------
