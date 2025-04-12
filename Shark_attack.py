@@ -58,3 +58,64 @@ ax.grid(axis='y', linestyle='--', alpha=0.7)
 plt.tight_layout()
 plt.show()
 # -----------------------------------------------------------------------------------------------------------------------------
+
+"⭐ Objective2: Temporal Analysis"
+# Analyze trends in shark attacks over time to identify patterns or anomalies.
+
+df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
+df = df.dropna(subset=['Date'])
+
+df['Year'] = df['Date'].dt.year
+df['Month'] = df['Date'].dt.month
+df['Day'] = df['Date'].dt.day
+
+sns.set_style("whitegrid")
+plt.style.use('dark_background')
+
+# Attacks per year
+plt.figure(figsize=(8, 5))
+sns.countplot(x='Year', data=df, hue='Year', palette='viridis', edgecolor='none')
+plt.title('Number of Shark Attacks Per Year')
+plt.xlabel('Year')
+plt.ylabel('Number of Attacks')
+plt.xticks(rotation=90)
+plt.show()
+
+# Attacks per month
+plt.figure(figsize=(10, 5))
+sns.countplot(x='Month', data=df, hue='Month', palette='coolwarm', edgecolor='none')
+plt.title('Number of Shark Attacks Per Month')
+plt.xlabel('Month')
+plt.ylabel('Number of Attacks')
+plt.show()
+
+# Decade
+df['Decade'] = (df['Year'] // 10) * 10
+
+plt.figure(figsize=(10, 5))
+sns.countplot(x='Decade', data=df, hue='Decade', palette='magma', edgecolor='white')
+plt.title('Number of Shark Attacks Per Decade')
+plt.xlabel('Decade')
+plt.ylabel('Number of Attacks')
+plt.grid(False)
+plt.show()
+
+# Anomalies
+yearly_attacks = df.groupby('Year').size()
+mean_attacks = yearly_attacks.mean()
+std_attacks = yearly_attacks.std()
+anomalies = yearly_attacks[(yearly_attacks - mean_attacks).abs() > 2 * std_attacks]
+print(anomalies)
+
+plt.figure(figsize=(9, 5))
+plt.plot(yearly_attacks.index, yearly_attacks.values, marker='x', linestyle='--', label='Attacks per Year')
+plt.scatter(anomalies.index, anomalies.values, color='red', label='Anomalies')
+plt.title('Shark Attacks Over Time with Anomalies Highlighted')
+plt.xlabel('Year')
+plt.ylabel('Number of Attacks')
+plt.legend()
+plt.grid(False)
+plt.show()
+
+warnings.filterwarnings("ignore")
+# -----------------------------------------------------------------------------------------------------------------------------
