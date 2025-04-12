@@ -119,3 +119,51 @@ plt.show()
 
 warnings.filterwarnings("ignore")
 # -----------------------------------------------------------------------------------------------------------------------------
+
+"⭐ Objective3: Geospatial Analysis"
+# Visualize the geographical distribution of shark attacks to identify high-risk areas.
+
+top_countries = df['Country'].value_counts().head(3).index
+df_top = df[df['Country'].isin(top_countries)]
+
+grouped = df_top.groupby(['Country', 'Area']).size().reset_index(name='Count')
+grouped = grouped.groupby('Country').apply(lambda x: x.nlargest(5, 'Count')).reset_index(drop=True)
+
+plt.figure(figsize=(8, 6))
+sns.barplot(y='Area', x='Count', hue='Country', data=grouped)
+plt.title('Shark Attacks by Area within Top 3 Countries')
+plt.xlabel('Number of Attacks')
+plt.ylabel('Area')
+plt.tight_layout()
+plt.grid(False)
+plt.show()
+
+top_countries = df['Country'].value_counts().head(3).index
+df_top = df[df['Country'].isin(top_countries)]
+
+grouped = df_top.groupby(['Country', 'Area']).size().reset_index(name='Count')
+low_risk_grouped = grouped.groupby('Country').apply(lambda x: x.nsmallest(5, 'Count')).reset_index(drop=True)
+
+low_risk_grouped['Label'] = low_risk_grouped['Country'] + ' | ' + low_risk_grouped['Area']
+low_risk_grouped = low_risk_grouped.sort_values(by='Count', ascending=True)
+
+plt.figure(figsize=(10, 8))
+colors = sns.color_palette("Set2", n_colors=len(top_countries))
+country_color = dict(zip(top_countries, colors))
+
+for _, row in low_risk_grouped.iterrows():
+    plt.hlines(y=row['Label'], xmin=0, xmax=row['Count'], color=country_color[row['Country']], linewidth=2)
+    plt.plot(row['Count'], row['Label'], "o", markersize=7, color=country_color[row['Country']])
+
+for country in top_countries:
+    plt.plot([], [], color=country_color[country], label=country)
+plt.legend(title='Country')
+
+plt.title('Low-Risk Shark Attack Areas (Top 3 Countries)', fontsize=14)
+plt.xlabel('Number of Attacks')
+plt.ylabel('Area')
+plt.tight_layout()
+plt.legend(title='Country', loc='lower right', fontsize=12)
+plt.grid(False)
+plt.show()
+# -----------------------------------------------------------------------------------------------------------------------------
