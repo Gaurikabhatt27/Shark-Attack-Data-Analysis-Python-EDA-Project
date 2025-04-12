@@ -260,3 +260,36 @@ sns.violinplot(x='Sex', y='Age', hue='Fatal', data=df_violin, split=True,
 plt.title('Age and Fatality Distribution by Gender')
 plt.show()
 #------------------------------------------------------------------------------------------------------------------------
+
+"⭐ Objective6: Demographic and Fatality Analysis"
+# Analyze the relationship between age, year, and gender with the fatality status of shark attacks to identify demographic patterns influencing attack outcomes.
+
+df['Fatal'] = df['Fatal'].map({'Y': 1, 'N': 0})
+
+subset_df = df[['Age', 'Year', 'Fatal']].dropna()
+
+correlation_matrix = subset_df.corr()
+correlation_matrix_copy = correlation_matrix.copy()
+
+#Heat Map
+plt.figure(figsize=(8, 6))
+sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', linewidths=0.5, square=True)
+plt.title('Correlation Heatmap of Shark Attack Dataset')
+plt.tight_layout()
+plt.show()
+
+# Scatter Plot
+
+df['Sex'] = df['Sex'].replace(['N', 'lli'], np.nan)  
+
+df = df.dropna(subset=['Sex'])
+
+plt.figure(figsize=(10, 6))
+sns.scatterplot(data=df, x='Age', y='Year', hue='Sex', palette='husl', style='Sex', markers={'M': 'o', 'F': 'X'}, edgecolor='none')
+plt.title('Scatter Plot of Age vs Year of Shark Attack')
+plt.xlabel('Age')
+plt.ylabel('Year')
+plt.tight_layout()
+plt.grid(False)
+plt.show()
+#---------------------------------------------------------------------------------------------------------------------------
